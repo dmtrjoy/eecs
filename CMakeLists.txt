@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.1.0)
 project(
-    Tomo
+    Misha
     VERSION 0.0.1
     DESCRIPTION "A game engine"
     LANGUAGES CXX)
