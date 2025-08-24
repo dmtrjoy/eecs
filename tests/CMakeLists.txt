@@ -10,3 +10,12 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(googletest)
+
+add_executable(tests
+    sparse_set.t.cpp
+)
+
+target_link_libraries(tests PRIVATE gtest_main misha_src)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
