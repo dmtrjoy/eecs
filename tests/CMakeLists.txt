@@ -13,6 +13,7 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
     sparse_set.t.cpp
+    world.t.cpp
 )
 
 target_link_libraries(tests PRIVATE gtest_main misha_src)

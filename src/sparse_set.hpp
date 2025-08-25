@@ -78,7 +78,7 @@ void sparse_set<T>::erase(const size_t id) noexcept
         return;
     }
 
-    const size_t dense_idx = m_sparse[id];
+    const size_t dense_idx { m_sparse[id] };
 
     std::swap(m_dense_ids[dense_idx], m_dense_ids.back());
     std::swap(m_dense_values[dense_idx], m_dense_values.back());
@@ -97,7 +97,7 @@ bool sparse_set<T>::contains(const size_t id) const
         return false;
     }
 
-    const size_t denseIdx = m_sparse[id];
+    const size_t denseIdx { m_sparse[id] };
     return denseIdx != npos && m_dense_ids[denseIdx] == id;
 }
 
