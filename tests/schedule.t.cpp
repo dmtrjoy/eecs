@@ -13,8 +13,7 @@ namespace {
         bool has_run = false;
     };
 
-    void
-    create_entity(world& world)
+    void create_entity(world& world)
     {
         entity entity = world.create_entity();
         test_component component { .has_run = true };
@@ -30,7 +29,7 @@ namespace {
         world.add_component(entity2, component);
     }
 
-}
+} // namespace
 
 TEST(ScheduleTest, Run_SystemsRanSequentially)
 {
@@ -44,8 +43,9 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
     schedule.run(world);
 
     // THEN
-    sparse_set<test_component> components = world.get_components<test_component>();
+    sparse_set<test_component> components
+        = world.get_components<test_component>();
     ASSERT_EQ(components.size(), 3);
 }
 
-}
+} // namespace misha::test

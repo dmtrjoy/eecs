@@ -7,11 +7,9 @@ namespace misha::test {
 
 namespace {
 
-    void test_system(world& world)
-    {
-    }
+    void test_system(world& world) { }
 
-}
+} // namespace
 
 TEST(AppTest, AddSystem)
 {
@@ -25,4 +23,4 @@ TEST(AppTest, AddSystem)
         .run();
 }
 
-}
+} // namespace misha::test

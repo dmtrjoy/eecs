@@ -7,6 +7,6 @@ namespace misha {
 
 using entity = uint32_t;
 
-}
+} // namespace misha
 
 #endif

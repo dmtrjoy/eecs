@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <vector>
 
+namespace misha {
+
 template <typename T>
 class sparse_set {
 public:
@@ -100,5 +102,7 @@ bool sparse_set<T>::contains(const size_t id) const
     const size_t denseIdx { m_sparse[id] };
     return denseIdx != npos && m_dense_ids[denseIdx] == id;
 }
+
+} // namespace misha
 
 #endif

@@ -7,6 +7,6 @@ namespace misha {
 
 using system = void (*)(world&);
 
-}
+} // namespace misha
 
 #endif

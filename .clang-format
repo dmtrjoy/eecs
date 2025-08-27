@@ -1,1 +1,11 @@
+---
 BasedOnStyle: WebKit
+# Limit to 80 characters per line
+ColumnLimit: 80
+# Always indent by 4 spaces
+IndentWidth: 4
+UseTab: Never
+# Keep template declarations on separate lines
+BreakTemplateDeclarations: Yes
+# Add namespace comments for readability
+FixNamespaceComments: Yes
