@@ -1,6 +1,6 @@
 set(LIBRARY_NAME misha_src)
 
-add_library(${LIBRARY_NAME} STATIC test.cpp)
+add_library(${LIBRARY_NAME} STATIC app.cpp schedule.cpp)
 
 target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
