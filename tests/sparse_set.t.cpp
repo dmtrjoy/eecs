@@ -58,4 +58,4 @@ TEST(SparseSetTest, Erase_ValueIsRemoved)
     EXPECT_TRUE(set.empty());
 }
 
-}
+} // namespace misha::test

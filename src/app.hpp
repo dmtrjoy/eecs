@@ -27,6 +27,6 @@ private:
     std::array<schedule, static_cast<size_t>(event::count)> m_schedules = {};
 };
 
-}
+} // namespace misha
 
 #endif

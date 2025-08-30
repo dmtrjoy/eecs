@@ -25,10 +25,7 @@ private:
     std::unordered_map<std::type_index, std::any> m_components;
 };
 
-inline entity world::create_entity() noexcept
-{
-    return m_next_entity++;
-}
+inline entity world::create_entity() noexcept { return m_next_entity++; }
 
 template <typename T>
 void world::add_component(entity entity, const T& component)
@@ -50,6 +47,6 @@ sparse_set<T>& world::get_components()
     return std::any_cast<sparse_set<T>&>(it->second);
 }
 
-}
+} // namespace misha
 
 #endif

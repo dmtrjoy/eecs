@@ -25,4 +25,4 @@ void app::run()
     m_schedules[std::to_underlying(event::shutdown)].run(m_world);
 }
 
-}
+} // namespace misha

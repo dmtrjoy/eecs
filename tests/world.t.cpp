@@ -43,4 +43,4 @@ TEST(WorldTest, AddComponent_ComponentIsPresent)
     EXPECT_EQ(components[entity], pod);
 }
 
-}
+} // namespace misha::test

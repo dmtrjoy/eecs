@@ -1,14 +1,13 @@
-Checks: '*,
+---
+Checks: "*,
         -abseil-*,
         -altera-*,
         -android-*,
+        -cppcoreguidelines-non-private-member-variables-in-classes,
         -fuchsia-*,
         -google-*,
         -llvm*,
         -misc-non-private-member-variables-in-classes,
         -modernize-use-trailing-return-type,
         -readability-identifier-length,
-        -zircon-*,'
-WarningsAsErrors: ''
-HeaderFilterRegex: ''
-FormatStyle:     none
+        -zircon-*"

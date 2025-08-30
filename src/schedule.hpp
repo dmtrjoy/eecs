@@ -18,6 +18,6 @@ private:
     std::vector<system> m_systems;
 };
 
-}
+} // namespace misha
 
 #endif

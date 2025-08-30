@@ -18,4 +18,4 @@ void schedule::run(world& world) const
     }
 }
 
-}
+} // namespace misha
