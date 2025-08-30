@@ -1,12 +1,12 @@
-#ifndef MISHA_SCHEDULE_HPP
-#define MISHA_SCHEDULE_HPP
+#ifndef EECS_SCHEDULE_HPP
+#define EECS_SCHEDULE_HPP
 
 #include <vector>
 
 #include "system.hpp"
 #include "world.hpp"
 
-namespace misha {
+namespace eecs {
 
 class schedule {
 public:
@@ -18,6 +18,6 @@ private:
     std::vector<system> m_systems;
 };
 
-} // namespace misha
+} // namespace eecs
 
 #endif

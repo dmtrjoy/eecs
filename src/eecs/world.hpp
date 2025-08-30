@@ -1,5 +1,5 @@
-#ifndef MISHA_WORLD_HPP
-#define MISHA_WORLD_HPP
+#ifndef EECS_WORLD_HPP
+#define EECS_WORLD_HPP
 
 #include <any>
 #include <typeindex>
@@ -8,7 +8,7 @@
 #include "entity.hpp"
 #include "sparse_set.hpp"
 
-namespace misha {
+namespace eecs {
 
 class world {
 public:
@@ -47,6 +47,6 @@ sparse_set<T>& world::get_components()
     return std::any_cast<sparse_set<T>&>(it->second);
 }
 
-} // namespace misha
+} // namespace eecs
 
 #endif

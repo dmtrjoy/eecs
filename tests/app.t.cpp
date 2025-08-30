@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-namespace misha::test {
+namespace eecs::test {
 
 namespace {
 
@@ -23,4 +23,4 @@ TEST(AppTest, AddSystem)
         .run();
 }
 
-} // namespace misha::test
+} // namespace eecs::test

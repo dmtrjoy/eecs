@@ -5,7 +5,7 @@
 
 #include "gtest/gtest.h"
 
-namespace misha::test {
+namespace eecs::test {
 
 namespace {
 
@@ -48,4 +48,4 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
     ASSERT_EQ(components.size(), 3);
 }
 
-} // namespace misha::test
+} // namespace eecs::test

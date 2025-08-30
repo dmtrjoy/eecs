@@ -2,7 +2,7 @@
 
 #include "gtest/gtest.h"
 
-namespace misha::test {
+namespace eecs::test {
 
 TEST(SparseSetTest, Insert_ValueIsPresent)
 {
@@ -58,4 +58,4 @@ TEST(SparseSetTest, Erase_ValueIsRemoved)
     EXPECT_TRUE(set.empty());
 }
 
-} // namespace misha::test
+} // namespace eecs::test
