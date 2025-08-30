@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 
-namespace misha::test {
+namespace eecs::test {
 
 /// A test component.
 struct component {
@@ -43,4 +43,4 @@ TEST(WorldTest, AddComponent_ComponentIsPresent)
     EXPECT_EQ(components[entity], pod);
 }
 
-} // namespace misha::test
+} // namespace eecs::test

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.1.0)
 project(
-    misha
+    EECS
     VERSION 0.0.1
     DESCRIPTION "A game engine"
     LANGUAGES CXX
@@ -16,6 +16,6 @@ add_subdirectory(thirdparty)
 add_subdirectory(src)
 
 add_library(${PROJECT_NAME} INTERFACE)
-target_link_libraries(${PROJECT_NAME} INTERFACE misha_src)
+target_link_libraries(${PROJECT_NAME} INTERFACE eecs)
 
 add_subdirectory(tests)

@@ -3,7 +3,7 @@
 #include "system.hpp"
 #include "world.hpp"
 
-namespace misha {
+namespace eecs {
 
 schedule& schedule::add_system(const system system)
 {
@@ -18,4 +18,4 @@ void schedule::run(world& world) const
     }
 }
 
-} // namespace misha
+} // namespace eecs

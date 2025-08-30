@@ -1,11 +1,11 @@
-#ifndef MISHA_SPARSE_SET_HPP
-#define MISHA_SPARSE_SET_HPP
+#ifndef EECS_SPARSE_SET_HPP
+#define EECS_SPARSE_SET_HPP
 
 #include <cstddef>
 #include <stdexcept>
 #include <vector>
 
-namespace misha {
+namespace eecs {
 
 template <typename T>
 class sparse_set {
@@ -103,6 +103,6 @@ bool sparse_set<T>::contains(const size_t id) const
     return denseIdx != npos && m_dense_ids[denseIdx] == id;
 }
 
-} // namespace misha
+} // namespace eecs
 
 #endif

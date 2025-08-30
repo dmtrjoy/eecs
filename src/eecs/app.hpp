@@ -1,5 +1,5 @@
-#ifndef MISHA_APP_HPP
-#define MISHA_APP_HPP
+#ifndef EECS_APP_HPP
+#define EECS_APP_HPP
 
 #include <array>
 #include <cstdint>
@@ -7,7 +7,7 @@
 #include "schedule.hpp"
 #include "system.hpp"
 
-namespace misha {
+namespace eecs {
 
 enum class event : uint8_t {
     startup,
@@ -27,6 +27,6 @@ private:
     std::array<schedule, static_cast<size_t>(event::count)> m_schedules = {};
 };
 
-} // namespace misha
+} // namespace eecs
 
 #endif

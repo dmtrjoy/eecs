@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace misha {
+namespace eecs {
 
 app& app::add_system(event event, system system)
 {
@@ -25,4 +25,4 @@ void app::run()
     m_schedules[std::to_underlying(event::shutdown)].run(m_world);
 }
 
-} // namespace misha
+} // namespace eecs
