@@ -43,8 +43,7 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
     schedule.run(world);
 
     // THEN
-    sparse_set<test_component> components
-        = world.get_components<test_component>();
+    sparse_set<test_component> components = world.components<test_component>();
     ASSERT_EQ(components.size(), 3);
 }
 

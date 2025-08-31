@@ -36,7 +36,7 @@ TEST(WorldTest, AddComponent_ComponentIsPresent)
 
     // WHEN
     world.add_component(entity, pod);
-    sparse_set<component> components = world.get_components<component>();
+    sparse_set<component> components = world.components<component>();
 
     // THEN
     ASSERT_TRUE(components.contains(entity));

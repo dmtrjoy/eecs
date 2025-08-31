@@ -1,4 +1,4 @@
-set(LIBRARY_NAME eecs)
+set(LIBRARY_NAME ecs)
 
 add_library(${LIBRARY_NAME} STATIC app.cpp schedule.cpp)
 
