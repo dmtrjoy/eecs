@@ -10,8 +10,17 @@ namespace eecs {
 template <typename T>
 class sparse_set {
 public:
+    using iterator = std::vector<T>::iterator;
+    using const_iterator = std::vector<T>::const_iterator;
+
     [[nodiscard]] const T& at(size_t id) const;
+    [[nodiscard]] T& operator[](size_t id);
     [[nodiscard]] const T& operator[](size_t id) const;
+
+    iterator begin();
+    const_iterator begin() const;
+    iterator end();
+    const_iterator end() const;
 
     [[nodiscard]] bool empty() const noexcept;
     [[nodiscard]] size_t size() const noexcept;
@@ -42,6 +51,36 @@ template <typename T>
 const T& sparse_set<T>::operator[](const size_t id) const
 {
     return m_dense_values[m_sparse[id]];
+}
+
+template <typename T>
+T& sparse_set<T>::operator[](const size_t id)
+{
+    return m_dense_values[m_sparse[id]];
+}
+
+template <typename T>
+sparse_set<T>::iterator sparse_set<T>::begin()
+{
+    return m_dense_values.begin();
+}
+
+template <typename T>
+sparse_set<T>::const_iterator sparse_set<T>::begin() const
+{
+    return m_dense_values.begin();
+}
+
+template <typename T>
+sparse_set<T>::iterator sparse_set<T>::end()
+{
+    return m_dense_values.end();
+}
+
+template <typename T>
+sparse_set<T>::const_iterator sparse_set<T>::end() const
+{
+    return m_dense_values.end();
 }
 
 template <typename T>
