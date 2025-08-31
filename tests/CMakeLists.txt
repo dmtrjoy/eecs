@@ -18,7 +18,7 @@ add_executable(tests
     world.t.cpp
 )
 
-target_link_libraries(tests PRIVATE gtest_main eecs)
+target_link_libraries(tests PRIVATE gtest_main ecs)
 
 include(GoogleTest)
 gtest_discover_tests(tests)
