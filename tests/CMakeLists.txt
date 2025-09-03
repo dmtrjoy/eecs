@@ -12,6 +12,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
+    any.t.cpp
     app.t.cpp
     schedule.t.cpp
     sparse_set.t.cpp
