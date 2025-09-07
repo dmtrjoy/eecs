@@ -1,6 +1,10 @@
 set(LIBRARY_NAME ecs)
 
-add_library(${LIBRARY_NAME} STATIC app.cpp schedule.cpp)
+add_library(${LIBRARY_NAME} STATIC
+    app.cpp
+    schedule.cpp
+    window.cpp
+)
 
 target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
