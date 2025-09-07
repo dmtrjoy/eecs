@@ -138,8 +138,8 @@ bool sparse_set<T>::contains(const size_t id) const
         return false;
     }
 
-    const size_t denseIdx { m_sparse[id] };
-    return denseIdx != npos && m_dense_ids[denseIdx] == id;
+    const size_t dense_idx { m_sparse[id] };
+    return dense_idx != npos && m_dense_ids[dense_idx] == id;
 }
 
 } // namespace eecs
