@@ -18,8 +18,10 @@ enum class event : uint8_t {
 
 class app {
 public:
+    /// Adds a system to run on a given event.
     app& add_system(event event, system system);
 
+    /// Runs the app.
     void run();
 
 private:
