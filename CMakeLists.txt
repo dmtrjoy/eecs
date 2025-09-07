@@ -6,6 +6,10 @@ project(
     LANGUAGES CXX
 )
 
+option(BUILD_DOCS "Whether to build the documentation" OFF)
+option(BUILD_EXAMPLES "Whether to build the examples" OFF)
+option(BUILD_TESTS "Whether to build the tests" OFF)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -14,9 +18,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(thirdparty)
 add_subdirectory(src)
-add_subdirectory(examples)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_link_libraries(${PROJECT_NAME} INTERFACE ecs)
 
-add_subdirectory(tests)
+if(BUILD_DOCS)
+    add_subdirectory(docs)
+endif()
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
