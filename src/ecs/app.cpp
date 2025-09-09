@@ -2,9 +2,11 @@
 
 #include <utility>
 
+#include "input.hpp"
+#include "window.hpp"
+
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
-#include "window.hpp"
 
 namespace eecs {
 
@@ -21,17 +23,14 @@ void app::run()
     const int width { 800 };
     const int height { 600 };
     m_world.add_resource<window>("title", width, height);
+    m_world.add_resource<input>();
+    auto& myinput = m_world.resource<input>();
 
     m_schedules[std::to_underlying(event::startup)].run(m_world);
 
-    bool done { false };
     SDL_Event event;
-    while (!done) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                done = true;
-            }
-        }
+    while (!myinput.quit()) {
+        myinput.poll();
         m_schedules[std::to_underlying(event::update)].run(m_world);
     }
 

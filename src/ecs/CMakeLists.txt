@@ -2,6 +2,7 @@ set(LIBRARY_NAME ecs)
 
 add_library(${LIBRARY_NAME} STATIC
     app.cpp
+    input.cpp
     schedule.cpp
     window.cpp
 )

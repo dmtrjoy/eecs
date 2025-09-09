@@ -1,8 +1,8 @@
 #include "any.hpp"
 
-#include "gtest/gtest.h"
-
 #include <typeindex>
+
+#include "gtest/gtest.h"
 
 namespace eecs::test {
 
