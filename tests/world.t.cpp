@@ -35,8 +35,8 @@ TEST_F(WorldTest, CreateEntity_EntityIsIncremented)
     // ...
 
     // WHEN
-    const entity entity1 { world.create_entity() };
-    const entity entity2 { world.create_entity() };
+    const entity entity1 { world.create() };
+    const entity entity2 { world.create() };
 
     // THEN
     EXPECT_EQ(entity1, 0);
@@ -46,11 +46,11 @@ TEST_F(WorldTest, CreateEntity_EntityIsIncremented)
 TEST_F(WorldTest, AddComponent_ComponentIsPresent)
 {
     // GIVEN
-    const entity entity { world.create_entity() };
+    const entity entity { world.create() };
     vec2 vec;
 
     // WHEN
-    world.add_component(entity, vec);
+    world.insert(entity, vec);
     const sparse_set<vec2>& vecs { world.components<vec2>() };
 
     // THEN

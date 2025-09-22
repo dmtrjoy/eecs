@@ -108,9 +108,9 @@ public:
         return m_pimpl->equals(*other.m_pimpl);
     }
 
-    /// Checks if this `::any` object is holding an object.
+    /// Checks whether this `::any` object is holding an object.
     ///
-    /// \return If this object is empty.
+    /// \return Whether this object is empty.
     [[nodiscard]] bool has_value() const noexcept { return m_pimpl != nullptr; }
 
     /// Returns the type index of the object held by this `::any`.

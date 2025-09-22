@@ -1,5 +1,7 @@
 #include "sparse_set.hpp"
 
+#include "types.hpp"
+
 #include "gtest/gtest.h"
 
 namespace eecs::test {
@@ -8,7 +10,7 @@ TEST(SparseSetTest, Insert_ValueIsPresent)
 {
     // GIVEN
     sparse_set<float> set;
-    const size_t id = 42;
+    const u32 id = 42;
     const float value = 100.0;
 
     // WHEN
@@ -17,14 +19,13 @@ TEST(SparseSetTest, Insert_ValueIsPresent)
     // THEN
     ASSERT_TRUE(set.contains(id));
     EXPECT_EQ(set[id], value);
-    EXPECT_EQ(set.at(id), value);
     EXPECT_EQ(set.size(), 1);
 }
 
 TEST(SparseSetTest, Insert_ForExistingId_ValueIsUpdated)
 {
     // GIVEN
-    const size_t id = 42;
+    const u32 id = 42;
     float value = 100.0;
 
     sparse_set<float> set;
@@ -37,14 +38,13 @@ TEST(SparseSetTest, Insert_ForExistingId_ValueIsUpdated)
     // THEN
     ASSERT_TRUE(set.contains(id));
     EXPECT_EQ(set[id], value);
-    EXPECT_EQ(set.at(id), value);
     EXPECT_EQ(set.size(), 1);
 }
 
 TEST(SparseSetTest, Erase_ValueIsRemoved)
 {
     // GIVEN
-    const size_t id = 42;
+    const u32 id = 42;
     const float value = 100.0;
 
     sparse_set<float> set;

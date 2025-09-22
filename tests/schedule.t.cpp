@@ -13,20 +13,20 @@ namespace {
         bool has_run = false;
     };
 
-    void create_entity(world& world)
+    void create(world& world)
     {
-        entity entity = world.create_entity();
+        entity entity = world.create();
         test_component component { .has_run = true };
-        world.add_component(entity, component);
+        world.insert(entity, component);
     }
 
     void create_two_entities(world& world)
     {
-        entity entity1 = world.create_entity();
-        entity entity2 = world.create_entity();
+        entity entity1 = world.create();
+        entity entity2 = world.create();
         test_component component { .has_run = true };
-        world.add_component(entity1, component);
-        world.add_component(entity2, component);
+        world.insert(entity1, component);
+        world.insert(entity2, component);
     }
 
 } // namespace
@@ -35,7 +35,7 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
 {
     // GIVEN
     schedule schedule;
-    schedule.add_system(create_entity).add_system(create_two_entities);
+    schedule.add_system(create).add_system(create_two_entities);
 
     world world;
 

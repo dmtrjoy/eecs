@@ -13,14 +13,14 @@
 
 namespace eecs {
 
-/// A specialized container for storing, querying, and operating on entities,
-/// components, and resources.
+/// A specialized container for storing, querying, and interacting with
+/// entities, components, and resources.
 class world {
 public:
     /// Creates a new `::entity`.
     ///
     /// \return A new `::entity` identifier.
-    entity create_entity() noexcept;
+    entity create() noexcept { return m_next_entity++; }
 
     /// Adds a component to an ::entity.
     ///
@@ -28,7 +28,11 @@ public:
     /// \param entity The ::entity to add the component to.
     /// \param component The component to add.
     template <typename Component>
-    void add_component(entity entity, const Component& component);
+    void insert(entity entity, const Component& component)
+    {
+        sparse_set<Component>& components { this->components<Component>() };
+        components.insert(entity, component);
+    }
 
     /// Adds a resource to this ::world. The resource is constructed in place.
     ///
@@ -74,15 +78,6 @@ private:
     std::unordered_map<std::type_index, any> m_components;
     std::unordered_map<std::type_index, any> m_resources;
 };
-
-inline entity world::create_entity() noexcept { return m_next_entity++; }
-
-template <typename Component>
-void world::add_component(entity entity, const Component& component)
-{
-    sparse_set<Component>& components { this->components<Component>() };
-    components.insert(entity, component);
-}
 
 template <typename Resource, typename... Args>
 void world::add_resource(Args&&... args)
