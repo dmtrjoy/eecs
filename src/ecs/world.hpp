@@ -22,122 +22,128 @@ public:
     /// \return A new `::entity` identifier.
     entity create() noexcept { return m_next_entity++; }
 
-    /// Adds a component to an ::entity.
+    /// Inserts a component into this `::world` and associates it with an
+    /// `::entity`.
     ///
-    /// \tparam Component The type of component to add.
-    /// \param entity The ::entity to add the component to.
-    /// \param component The component to add.
-    template <typename Component>
-    void insert(entity entity, const Component& component)
+    /// \tparam T The type of component to insert.
+    /// \param entity The `::entity` to associate the component with.
+    /// \param component The component to insert.
+    template <typename T>
+    void insert(entity entity, const T& component)
     {
-        sparse_set<Component>& components { this->components<Component>() };
+        sparse_set<T>& components { this->components<T>() };
         components.insert(entity, component);
     }
 
-    /// Adds a resource to this ::world. The resource is constructed in place.
+    /// Inserts a new component into this `::world` constructed in-place with
+    /// the given `args` and associates it with an `::entity`.
     ///
-    /// Resources are unique data types managed by the ::world. They are
+    /// \tparam T The type of component to insert.
+    /// \tparam Args The pack of component constructor parameter types.
+    /// \param entity The `::entity` to associate the component with.
+    /// \param args The arguments to forward to the constructor of the
+    ///     component.
+    template <typename T, typename... Args>
+    void emplace(const entity entity, Args&&... args)
+    {
+        sparse_set<T>& components { this->components<T>() };
+        components.emplace(entity, std::forward<Args>(args)...);
+    }
+
+    /// Inserts a new resource into this `::world` constructed in-place with
+    /// the given `args`.
+    ///
+    /// Resources are unique data types managed by the `::world`. They are
     /// similar to singletons in that only one instance can exist at any time;
     /// however, resources do not have global state. Their lifetimes are tied
-    /// to the ::world that owns them.
+    /// to the `::world` that owns them.
     ///
-    /// \tparam Resource The type of resource to add.
-    /// \tparam Args Parameter pack for constructor argument types.
-    /// \param args Arguments forwarded to the resource constructor.
-    template <typename Resource, typename... Args>
-    void add_resource(Args&&... args);
+    /// \tparam T The type of resource to insert.
+    /// \tparam Args The pack of resource constructor parameter types.
+    /// \param args The arguments to forward to the constructor of the
+    ///     resource.
+    template <typename T, typename... Args>
+    void emplace(Args&&... args)
+    {
+        const auto type_id { std::type_index(typeid(T)) };
+        m_resources.emplace(std::piecewise_construct,
+            std::forward_as_tuple(type_id),
+            std::forward_as_tuple(
+                std::in_place_type_t<T> {}, std::forward<Args>(args)...));
+    }
 
-    /// Clears all entities from this ::world.
-    void clear_entities();
+    /// Clears all entities from this `::world`.
+    void clear()
+    {
+        m_next_entity = 0;
+        m_components.clear();
+    }
 
-    /// Retrieves this ::world's component collection of the given type.
+    /// Returns this `::world`'s component collection of the given type.
     ///
-    /// \tparam Component The type of component collection to retrieve.
+    /// \tparam T The type of component collection to return.
     /// \return A reference to the component collection.
-    template <typename Component>
-    sparse_set<Component>& components();
+    template <typename T>
+    sparse_set<T>& components()
+    {
+        const auto type_id { std::type_index(typeid(T)) };
+        auto it { m_components.find(type_id) };
 
-    /// Retrives a resource from this ::world.
+        if (it == m_components.end()) {
+            it = m_components
+                     .emplace(std::piecewise_construct,
+                         std::forward_as_tuple(type_id),
+                         std::forward_as_tuple(
+                             std::in_place_type_t<sparse_set<T>> {}))
+                    .first;
+        }
+
+        return any_cast<sparse_set<T>>(it->second);
+    }
+
+    /// Returns a resource from this `::world`.
     ///
-    /// \tparam Resource The type of resource to retrieve.
+    /// \tparam T The type of resource to return.
     /// \return A reference to the resource.
     /// \throws std::out_of_range if the resource is not found.
-    template <typename Resource>
-    Resource& resource();
+    template <typename T>
+    T& resource()
+    {
+        const auto type_id { std::type_index(typeid(T)) };
+        const auto it { m_resources.find(type_id) };
 
-    /// Calls a function on each ::entity with the given types of components.
+        if (it == m_resources.end()) {
+            throw std::out_of_range("Resource not found");
+        }
+
+        return any_cast<T>(it->second);
+    }
+
+    /// Invokes a function on each `::entity` associated with the given types
+    /// of components.
     ///
-    /// \tparam Components The types of components that the entities must have.
-    /// \tparam Fn The type of function to call.
-    /// \param fn The function to call for each matching ::entity.
-    template <typename... Components, typename Fn>
-    void view(Fn&& fn);
+    /// \tparam T The types of components that each `::entity` must be
+    ///     associated with.
+    /// \tparam Fn The type of function to invoke.
+    /// \param fn The function to invoke for each matching `::entity`.
+    template <typename... T, typename Fn>
+    void view(Fn&& fn)
+    {
+        auto& first_components {
+            components<std::tuple_element_t<0, std::tuple<T...>>>()
+        };
+        for (const auto& [entity, _] : first_components) {
+            if ((components<T>().contains(entity) && ...)) {
+                std::forward<Fn>(fn)(entity, components<T>()[entity]...);
+            }
+        }
+    }
 
 private:
     entity m_next_entity = 0;
     std::unordered_map<std::type_index, any> m_components;
     std::unordered_map<std::type_index, any> m_resources;
 };
-
-template <typename Resource, typename... Args>
-void world::add_resource(Args&&... args)
-{
-    const auto type_id { std::type_index(typeid(Resource)) };
-    m_resources.emplace(std::piecewise_construct,
-        std::forward_as_tuple(type_id),
-        std::forward_as_tuple(
-            std::in_place_type_t<Resource> {}, std::forward<Args>(args)...));
-}
-
-inline void world::clear_entities()
-{
-    m_next_entity = 0;
-    m_components.clear();
-}
-
-template <typename Component>
-sparse_set<Component>& world::components()
-{
-    const auto type_id { std::type_index(typeid(Component)) };
-    auto it { m_components.find(type_id) };
-
-    if (it == m_components.end()) {
-        it = m_components
-                 .emplace(std::piecewise_construct,
-                     std::forward_as_tuple(type_id),
-                     std::forward_as_tuple(
-                         std::in_place_type_t<sparse_set<Component>> {}))
-                 .first;
-    }
-
-    return any_cast<sparse_set<Component>>(it->second);
-}
-
-template <typename Resource>
-Resource& world::resource()
-{
-    const auto type_id { std::type_index(typeid(Resource)) };
-    const auto it { m_resources.find(type_id) };
-
-    if (it == m_resources.end()) {
-        throw std::out_of_range("Resource not found");
-    }
-
-    return any_cast<Resource>(it->second);
-}
-
-template <typename... Components, typename Fn>
-void world::view(Fn&& fn)
-{
-    auto& first_components {
-        components<std::tuple_element_t<0, std::tuple<Components...>>>()
-    };
-    for (const auto& [entity, _] : first_components) {
-        if ((components<Components>().contains(entity) && ...)) {
-            std::forward<Fn>(fn)(entity, components<Components>()[entity]...);
-        }
-    }
-}
 
 } // namespace eecs
 
