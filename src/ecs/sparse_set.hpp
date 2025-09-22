@@ -1,146 +1,172 @@
 #ifndef EECS_SPARSE_SET_HPP
 #define EECS_SPARSE_SET_HPP
 
+#include <cassert>
+#include <concepts>
 #include <cstddef>
-#include <stdexcept>
+#include <limits>
+#include <utility>
 #include <vector>
+
+#include "types.hpp"
 
 namespace eecs {
 
-template <typename T>
+template <typename T, std::unsigned_integral IdType = u32>
 class sparse_set {
 public:
-    using iterator = std::vector<T>::iterator;
-    using const_iterator = std::vector<T>::const_iterator;
+    using value_type = T;
+    using id_type = IdType;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using iterator = typename std::vector<value_type>::iterator;
+    using const_iterator = typename std::vector<value_type>::const_iterator;
 
-    [[nodiscard]] const T& at(size_t id) const;
-    [[nodiscard]] T& operator[](size_t id);
-    [[nodiscard]] const T& operator[](size_t id) const;
+    /// Returns a reference to the value that `id` maps to.
+    ///
+    /// \param id The `id` of the element to find.
+    /// \return A reference to the mapped value.
+    [[nodiscard]] reference operator[](const id_type id) noexcept
+    {
+        assert(id != s_tombstone);
+        assert(contains(id));
+        return m_dense_values[m_sparse[id]];
+    }
 
-    iterator begin();
-    const_iterator begin() const;
-    iterator end();
-    const_iterator end() const;
+    /// Returns a constant reference to the value that `id` maps to.
+    ///
+    /// \param id The `id` of the element to find.
+    /// \return A constant reference to the mapped value.
+    [[nodiscard]] const_reference operator[](const id_type id) const noexcept
+    {
+        assert(id != s_tombstone);
+        assert(contains(id));
+        return m_dense_values[m_sparse[id]];
+    }
 
-    [[nodiscard]] bool empty() const noexcept;
-    [[nodiscard]] size_t size() const noexcept;
+    /// Returns an iterator to the first element of this container.
+    ///
+    /// \return An iterator to the first element.
+    iterator begin() noexcept { return m_dense_values.begin(); }
 
-    void insert(size_t id, const T& value);
-    void erase(size_t id) noexcept;
+    /// Returns a constant iterator to the first element of this container.
+    ///
+    /// \return A constant iterator to the first element.
+    const_iterator begin() const noexcept { return m_dense_values.begin(); };
 
-    [[nodiscard]] bool contains(size_t id) const;
+    /// Returns an iterator to the last element of this container.
+    ///
+    /// \return An iterator to the last element.
+    iterator end() noexcept { return m_dense_values.end(); }
+
+    /// Returns a constant iterator to the last element of this container.
+    ///
+    /// \return A constant iterator to the last element.
+    const_iterator end() const noexcept { return m_dense_values.end(); };
+
+    /// Checks whether the container is empty.
+    ///
+    /// \return Whether the container is empty.
+    [[nodiscard]] bool empty() const noexcept { return size() == 0; }
+
+    /// Returns the size of the container.
+    ///
+    /// \return The size of the container.
+    [[nodiscard]] id_type size() const noexcept { return m_dense_ids.size(); }
+
+    void insert(const id_type id, const value_type& value)
+    {
+        assert(id != s_tombstone);
+
+        if (contains(id)) {
+            m_dense_values[m_sparse[id]] = value;
+            return;
+        }
+
+        if (id >= m_sparse.size()) {
+            m_sparse.resize(id + 1, s_tombstone);
+        }
+
+        m_sparse[id] = m_dense_ids.size();
+        m_dense_ids.push_back(id);
+        m_dense_values.push_back(value);
+    }
+
+    /// Inserts a new element into the container constructed in-place with the
+    /// given `args`. Overwrites the value that `id` maps to if one already
+    /// exists.
+    ///
+    /// \param id The `id` of the element to insert.
+    /// \param args The arguments to forward to the constructor of the element.
+    /// \return A reference to the inserted element.
+    template <typename... Args>
+    reference emplace(const id_type id, Args&&... args)
+    {
+        assert(id != s_tombstone);
+
+        if (contains(id)) {
+            reference value = m_dense_values[m_sparse[id]];
+            value = value_type(std::forward<Args>(args)...);
+            return value;
+        }
+
+        if (id >= m_sparse.size()) {
+            m_sparse.resize(id + 1, s_tombstone);
+        }
+
+        m_sparse[id] = m_dense_ids.size();
+        m_dense_ids.push_back(id);
+        m_dense_values.emplace_back(std::forward<Args>(args)...);
+    }
+
+    /// Removes the element (if one exists) with the identifier equivalent to
+    /// `id`.
+    ///
+    /// \param id The `id` of the element to remove.
+    void erase(const id_type id) noexcept
+    {
+        assert(id != s_tombstone);
+
+        if (!contains(id)) {
+            return;
+        }
+
+        const id_type dense_id { m_sparse[id] };
+
+        std::swap(m_dense_ids[dense_id], m_dense_ids.back());
+        std::swap(m_dense_values[dense_id], m_dense_values.back());
+
+        m_dense_ids.pop_back();
+        m_dense_values.pop_back();
+
+        m_sparse[m_dense_ids[dense_id]] = dense_id;
+        m_sparse[id] = s_tombstone;
+    };
+
+    /// Checks if there is an element with an identifier equivalent to `id` in
+    /// the container.
+    ///
+    /// \param id The `id` of the element to search for.
+    /// \return `true` if a matching element is found; `false` otherwise.
+    [[nodiscard]] bool contains(const id_type id) const noexcept
+    {
+        assert(id != s_tombstone);
+
+        if (id >= m_sparse.size()) {
+            return false;
+        }
+
+        const id_type dense_id { m_sparse[id] };
+        return dense_id != s_tombstone && m_dense_ids[dense_id] == id;
+    };
 
 private:
-    static constexpr size_t npos = static_cast<size_t>(-1);
+    static constexpr id_type s_tombstone = std::numeric_limits<id_type>().max();
 
-    std::vector<size_t> m_sparse;
-    std::vector<size_t> m_dense_ids;
-    std::vector<T> m_dense_values;
+    std::vector<id_type> m_sparse;
+    std::vector<id_type> m_dense_ids;
+    std::vector<value_type> m_dense_values;
 };
-
-template <typename T>
-const T& sparse_set<T>::at(const size_t id) const
-{
-    if (!contains(id)) {
-        throw std::out_of_range("id not found");
-    }
-    return m_dense_values[m_sparse[id]];
-}
-
-template <typename T>
-const T& sparse_set<T>::operator[](const size_t id) const
-{
-    return m_dense_values[m_sparse[id]];
-}
-
-template <typename T>
-T& sparse_set<T>::operator[](const size_t id)
-{
-    return m_dense_values[m_sparse[id]];
-}
-
-template <typename T>
-sparse_set<T>::iterator sparse_set<T>::begin()
-{
-    return m_dense_values.begin();
-}
-
-template <typename T>
-sparse_set<T>::const_iterator sparse_set<T>::begin() const
-{
-    return m_dense_values.begin();
-}
-
-template <typename T>
-sparse_set<T>::iterator sparse_set<T>::end()
-{
-    return m_dense_values.end();
-}
-
-template <typename T>
-sparse_set<T>::const_iterator sparse_set<T>::end() const
-{
-    return m_dense_values.end();
-}
-
-template <typename T>
-bool sparse_set<T>::empty() const noexcept
-{
-    return size() == 0;
-}
-
-template <typename T>
-size_t sparse_set<T>::size() const noexcept
-{
-    return m_dense_ids.size();
-}
-
-template <typename T>
-void sparse_set<T>::insert(const size_t id, const T& value)
-{
-    if (contains(id)) {
-        m_dense_values[m_sparse[id]] = value;
-        return;
-    }
-
-    if (id >= m_sparse.size()) {
-        m_sparse.resize(id + 1, npos);
-    }
-
-    m_sparse[id] = m_dense_ids.size();
-    m_dense_ids.push_back(id);
-    m_dense_values.push_back(value);
-}
-
-template <typename T>
-void sparse_set<T>::erase(const size_t id) noexcept
-{
-    if (!contains(id)) {
-        return;
-    }
-
-    const size_t dense_idx { m_sparse[id] };
-
-    std::swap(m_dense_ids[dense_idx], m_dense_ids.back());
-    std::swap(m_dense_values[dense_idx], m_dense_values.back());
-
-    m_dense_ids.pop_back();
-    m_dense_values.pop_back();
-
-    m_sparse[m_dense_ids[dense_idx]] = dense_idx;
-    m_sparse[id] = npos;
-}
-
-template <typename T>
-bool sparse_set<T>::contains(const size_t id) const
-{
-    if (id >= m_sparse.size()) {
-        return false;
-    }
-
-    const size_t dense_idx { m_sparse[id] };
-    return dense_idx != npos && m_dense_ids[dense_idx] == id;
-}
 
 } // namespace eecs
 
