@@ -47,7 +47,7 @@ TEST_F(WorldTest, AddComponent_ComponentIsPresent)
 {
     // GIVEN
     const entity entity { world.create() };
-    vec2 vec;
+    const vec2 vec;
 
     // WHEN
     world.insert(entity, vec);
@@ -61,11 +61,11 @@ TEST_F(WorldTest, AddComponent_ComponentIsPresent)
 TEST_F(WorldTest, AddResource_ResourceIsPresent)
 {
     // GIVEN
-    const int width { 800 };
-    const int height { 600 };
+    constexpr int width { 800 };
+    constexpr int height { 600 };
 
     // WHEN
-    world.add_resource<window_resource>(width, height);
+    world.emplace<window_resource>(width, height);
     const auto& window { world.resource<window_resource>() };
 
     // THEN
@@ -76,11 +76,11 @@ TEST_F(WorldTest, AddResource_ResourceIsPresent)
 TEST_F(WorldTest, AddResource_ExistingResource_ResourceIsUpdated)
 {
     // GIVEN
-    const int width { 100 };
-    const int height { 100 };
+    constexpr int width { 100 };
+    constexpr int height { 100 };
 
     // WHEN
-    world.add_resource<window_resource>(width, height);
+    world.emplace<window_resource>(width, height);
     const auto& window { world.resource<window_resource>() };
 
     // THEN

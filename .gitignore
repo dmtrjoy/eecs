@@ -4,3 +4,6 @@ build
 # clangd files and directories
 .cache
 compile_commands.json
+
+# Editor files and directories
+.idea
