@@ -22,8 +22,8 @@ void app::run()
 
     const int width { 800 };
     const int height { 600 };
-    m_world.add_resource<window>("title", width, height);
-    m_world.add_resource<input>();
+    m_world.emplace<window>("title", width, height);
+    m_world.emplace<input>();
     auto& myinput = m_world.resource<input>();
 
     m_schedules[std::to_underlying(event::startup)].run(m_world);
