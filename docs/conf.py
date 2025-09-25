@@ -45,7 +45,7 @@ def configure_doxyfile(input_dir: str, output_dir: str) -> None:
     content = content.replace('@DOXYGEN_OUTPUT_DIR@', output_dir)
 
     with open('Doxyfile', 'w') as file:
-        file.write(filedata)
+        file.write(content)
 
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 
