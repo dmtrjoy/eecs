@@ -33,4 +33,11 @@ html_theme_options = {
 html_static_path = ['_static']
 
 # -- Breathe configuration ---------------------------------------------------
-breathe_default_project = "eecs"
+breathe_default_project = 'eecs'
+
+import subprocess, os
+
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+if read_the_docs_build:
+     subprocess.call('cd ../doxygen; doxygen', shell=True)
