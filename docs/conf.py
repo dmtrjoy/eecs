@@ -28,7 +28,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'shibuya'
 html_theme_options = {
-    "accent_color": "grass",
+    'accent_color': 'grass',
 }
 html_static_path = ['_static']
 
@@ -52,7 +52,7 @@ read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 breathe_projects = {}
 
 if read_the_docs_build:
-    input_dir = '../eecs'
+    input_dir = '../src'
     output_dir = 'build'
     configure_doxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)
