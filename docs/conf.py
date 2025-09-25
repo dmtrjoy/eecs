@@ -30,7 +30,7 @@ html_theme = 'shibuya'
 html_theme_options = {
     'accent_color': 'grass',
 }
-html_static_path = ['_static']
+html_static_path = []
 
 # -- Breathe configuration ---------------------------------------------------
 breathe_default_project = 'eecs'
